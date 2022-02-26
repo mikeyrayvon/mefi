@@ -1,54 +1,57 @@
-import Link from 'next/link'
 import Container from './Container'
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../utils/supabase'
 import { useAppContext } from '../utils/store'
-import Transaction from './Transaction'
+import Transactions from './Transactions'
+import Accounts from './Accounts'
+import Categories from './Categories'
+import { Auth } from '@supabase/ui'
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true)
-
-  const { state: {session, transactions, accounts, categories}, dispatch } = useAppContext()
+  const [listView, setListView] = useState('transactions')
+  const { user } = Auth.useUser()
+  const { state: {transactions, accounts, categories}, dispatch } = useAppContext()
 
   useEffect(() => {
-    if (session) {
+    if (user) {
       fetchData()
     }
-  }, [session]);
+  }, [user]);
 
   const fetchData = async () => {
     setLoading(true) 
 
     try {
-      const txnsRes = await supabase
+      const transactionsRes = await supabase
         .from('transactions')
         .select()
         .order('created_at')
 
-      if (txnsRes.error && txnsRes.status !== 406) {
-        throw txnsRes.error
-      } else if (txnsRes.data) {
-        dispatch({ type: 'set transactions', payload: txnsRes.data })
+      if (transactionsRes.error && transactionsRes.status !== 406) {
+        throw transactionsRes.error
+      } else if (transactionsRes.data) {
+        dispatch({ type: 'set transactions', payload: transactionsRes.data })
       }
       
-      const acctsRes = await supabase
+      const accountsRes = await supabase
         .from('accounts')
         .select()
 
-      if (acctsRes.error && acctsRes.status !== 406) {
-        throw acctsRes.error
-      } else if (acctsRes.data) {
-        dispatch({ type: 'set accounts', payload: acctsRes.data })
+      if (accountsRes.error && accountsRes.status !== 406) {
+        throw accountsRes.error
+      } else if (accountsRes.data) {
+        dispatch({ type: 'set accounts', payload: accountsRes.data })
       }
 
-      const catsRes = await supabase
+      const categoriesRes = await supabase
         .from('categories')
         .select()
 
-      if (catsRes.error && catsRes.status !== 406) {
-        throw catsRes.error
-      } else if (catsRes.data) {
-        dispatch({ type: 'set categories', payload: catsRes.data })
+      if (categoriesRes.error && categoriesRes.status !== 406) {
+        throw categoriesRes.error
+      } else if (categoriesRes.data) {
+        dispatch({ type: 'set categories', payload: categoriesRes.data })
       }
     } catch (e) {
       console.error(e)
@@ -57,37 +60,26 @@ const Dashboard: React.FC = () => {
     }
   }
 
-  /*
   useEffect(() => {
-    const todoListener = supabaseClient
-      .from("todos")
+    const listener = supabase
+      .from("transactions")
       .on("*", (payload) => {
-        if (payload.eventType !== "DELETE") {
-          const newTodo = payload.new;
-          setTodos((oldTodos) => {
-            const exists = oldTodos.find((todo) => todo.id === newTodo.id);
-            let newTodos;
-            if (exists) {
-              const oldTodoIndex = oldTodos.findIndex(
-                (obj) => obj.id === newTodo.id
-              );
-              oldTodos[oldTodoIndex] = newTodo;
-              newTodos = oldTodos;
-            } else {
-              newTodos = [...oldTodos, newTodo];
-            }
-            newTodos.sort((a, b) => b.id - a.id);
-            return newTodos;
-          });
+        if (payload.eventType === "INSERT") {
+          dispatch({ type: 'insert transaction', payload: payload.new })
+        }
+        if (payload.eventType === 'UPDATE') {
+          dispatch({ type: 'update transaction', payload: payload.new })
+        }
+        if (payload.eventType === 'DELETE') {
+          dispatch({ type: 'delete transaction', payload: payload.old.id })
         }
       })
       .subscribe();
 
     return () => {
-      todoListener.unsubscribe();
+      listener.unsubscribe();
     };
   }, []);
-  */
 
   return (
     <>
@@ -96,13 +88,34 @@ const Dashboard: React.FC = () => {
           <div><span>Loading</span></div>
         ) : (
           <div>
-            {transactions.length > 0 &&
-              <ul>
-                { 
-                  transactions.map((txn: any) => <li key={txn.id}><Transaction data={txn} /></li>) 
-                }
-              </ul>
-            }
+            <div className='flex -mx-1 mb-3'>
+              <div className='w-1/3 px-1'>
+                <button 
+                  className={`button text-xs w-full ${listView === 'transactions' ? 'bg-gray-700' : ''}`} 
+                  onClick={() => setListView('transactions')}>Txns</button>
+              </div>
+              <div className='w-1/3 px-1'>
+                <button 
+                  className={`button text-xs w-full ${listView === 'accounts' ? 'bg-gray-700' : ''}`}
+                  onClick={() => setListView('accounts')}>Accts</button>
+              </div>
+              <div className='w-1/3 px-1'>
+                <button 
+                  className={`button text-xs w-full ${listView === 'categories' ? 'bg-gray-700' : ''}`}
+                  onClick={() => setListView('categories')}>Cats</button>
+              </div>
+            </div>
+            <div>
+              {listView === 'transactions' &&
+                <Transactions />
+              }
+              {listView === 'accounts' &&
+                <Accounts />
+              }
+              {listView === 'categories' &&
+                <Categories />
+              }
+            </div>
           </div>
         )}
       </Container>

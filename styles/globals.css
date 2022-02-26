@@ -20,7 +20,7 @@ html, body {
 }
 
 .input {
-  @apply rounded-md text-black;
+  @apply rounded-md text-white px-2 py-1 bg-gray-800 border border-white;
 }
 
 .button {

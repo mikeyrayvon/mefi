@@ -4,6 +4,8 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import * as gtag from '../utils/gtag'
 import { AppProvider } from '../utils/store'
+import { Auth } from '@supabase/ui'
+import { supabase } from '../utils/supabase'
 
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter()
@@ -18,9 +20,12 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, [router.events])
 
   return (
-    <AppProvider>
-      <Component {...pageProps} />
-    </AppProvider>
+      <AppProvider>
+        <Auth.UserContextProvider supabaseClient={supabase}>
+          <Component {...pageProps} />
+        </Auth.UserContextProvider>
+      </AppProvider>
+    
   )
 }
 

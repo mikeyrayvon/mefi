@@ -32,6 +32,28 @@ export const storeReducer = (state: StoreIF, action: ActionIF) => {
         ...state,
         categories: action.payload
       }
+    case 'insert transaction': 
+      return {
+        ...state,
+        transactions: [
+          action.payload,
+          ...state.transactions
+        ]
+      }
+    case 'update transaction': 
+      const updatedIndex = state.transactions.findIndex((t: any) => t.id === action.payload.id)
+      let updatedTransactions = [...state.transactions]
+      updatedTransactions[updatedIndex] = action.payload
+      return {
+        ...state,
+        transactions: updatedTransactions
+      }
+    case 'delete transaction': 
+      const filteredTransactions = state.transactions.filter((t: any) => t.id !== action.payload)
+      return {
+        ...state,
+        transactions: filteredTransactions
+      }
     default:
       throw new Error()
   }

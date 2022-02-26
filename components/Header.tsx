@@ -1,9 +1,9 @@
-import { useAppContext } from '../utils/store'
-import { supabase } from '../utils/supabase'
 import Container from './Container'
+import { Auth } from '@supabase/ui'
+import { supabase } from '../utils/supabase'
 
 const Header: React.FC = () => {
-  const { state, dispatch } = useAppContext()
+  const { user } = Auth.useUser()
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -15,10 +15,10 @@ const Header: React.FC = () => {
   return (
     <header className='my-4'>
       <Container>
-        <div className='flex justify-between align-center'>
-          <h1>MyFi</h1>
+        <div className='flex justify-between items-center'>
+          <div><span className='text-2xl mr-3'>😊</span><span>Happy Money</span></div>
           <div>
-            {state.session &&
+            {user &&
               <button className='button text-xs' onClick={() => signOut()}>Sign Out</button>
             }
           </div>
