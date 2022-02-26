@@ -1,0 +1,58 @@
+/* purgecss start ignore */
+@import 'fonts.css';
+
+@tailwind base;
+@tailwind components;
+
+/* purgecss end ignore */
+
+@import 'swiper/css';
+
+html, body {
+  @apply bg-black text-white;
+  font-size: 18px;
+}
+
+.container {
+  @apply mx-auto;
+  width: 90%;
+  max-width: 500px;
+}
+
+.input {
+  @apply rounded-md text-black;
+}
+
+.button {
+  @apply px-2 py-1 text-center border border-white rounded-md;
+}
+
+.portable-text > * {
+  @apply mb-4;
+}
+
+.portable-text > *:last-child {
+  @apply mb-0;
+}
+
+.portable-text a:link {
+  @apply underline;
+}
+/*
+@screen sm {
+
+}
+
+@screen md {
+
+}
+
+@screen lg {
+
+}
+
+@screen xl {
+
+}
+*/
+@tailwind utilities;
