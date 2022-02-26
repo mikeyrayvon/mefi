@@ -47,6 +47,7 @@ const Dashboard: React.FC = () => {
       const categoriesRes = await supabase
         .from('categories')
         .select()
+        .order('order')
 
       if (categoriesRes.error && categoriesRes.status !== 406) {
         throw categoriesRes.error
