@@ -48,7 +48,6 @@ const Home: NextPage<{}> = ({ }) => {
             <div className='bg-white p-4 rounded-md'>
               <Auth
                 supabaseClient={supabase}
-                view={authView}
                 />
             </div>
           </Container>
