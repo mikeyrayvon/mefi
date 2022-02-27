@@ -53,7 +53,7 @@ const Category: React.FC<Props> = ({ data, close }) => {
           id,
           name: values.name,
           emoji: values.emoji,
-
+          order
         })
       if (res.error) {
         console.error(res.error)
