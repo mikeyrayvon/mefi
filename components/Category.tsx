@@ -148,6 +148,7 @@ const Category: React.FC<Props> = ({ data, close }) => {
                 name='budget' 
                 value={values.budget} 
                 type="number"
+                inputMode="numeric"
                 step="1"
                 min="0"
                 onChange={handleChange} />
