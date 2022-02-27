@@ -1,18 +1,23 @@
 interface Props {
   data: any
+  open: () => void
 }
 
-const Category: React.FC<Props> = ({ data }) => {
-  const {name} = data
+const CategoryItem: React.FC<Props> = ({ data, open }) => {
+  const {name, emoji} = data
+
   return (
-    <div className='border border-white rounded-lg py-2 px-3 mb-2'>
-      <div className='flex justify-between items-center'>
+    <button onClick={open} className='w-full border border-white rounded-lg py-2 px-3 mb-2'>
+      <div className='flex items-center justify-between'>
         <div>
-          <div><span>{name}</span></div>
+          <span>{name}</span>
+        </div>
+        <div>
+          <span>{emoji}</span>
         </div>
       </div>
-    </div>
+    </button>
   )
 };
 
-export default Category
+export default CategoryItem

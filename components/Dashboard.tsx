@@ -2,10 +2,15 @@ import Container from './Container'
 import { useState, useEffect } from 'react'
 import { supabase } from '../utils/supabase'
 import { useAppContext } from '../utils/store'
-import Transactions from './Transactions'
-import Accounts from './Accounts'
-import Categories from './Categories'
 import { Auth } from '@supabase/ui'
+
+import ListView from './ListView'
+import AccountItem from './AccountItem'
+import Account from './Account'
+import CategoryItem from './CategoryItem'
+import Category from './Category'
+import TransactionItem from './TransactionItem'
+import Transaction from './Transaction'
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true)
@@ -62,7 +67,7 @@ const Dashboard: React.FC = () => {
   }
 
   useEffect(() => {
-    const listener = supabase
+    const transactionsListener = supabase
       .from("transactions")
       .on("*", (payload) => {
         if (payload.eventType === "INSERT") {
@@ -77,8 +82,40 @@ const Dashboard: React.FC = () => {
       })
       .subscribe();
 
+    const accountsListener = supabase
+      .from("accounts")
+      .on("*", (payload) => {
+        if (payload.eventType === "INSERT") {
+          dispatch({ type: 'insert account', payload: payload.new })
+        }
+        if (payload.eventType === 'UPDATE') {
+          dispatch({ type: 'update account', payload: payload.new })
+        }
+        if (payload.eventType === 'DELETE') {
+          dispatch({ type: 'delete account', payload: payload.old.id })
+        }
+      })
+      .subscribe();
+
+    const categoriesListener = supabase
+      .from("categories")
+      .on("*", (payload) => {
+        if (payload.eventType === "INSERT") {
+          dispatch({ type: 'insert category', payload: payload.new })
+        }
+        if (payload.eventType === 'UPDATE') {
+          dispatch({ type: 'update category', payload: payload.new })
+        }
+        if (payload.eventType === 'DELETE') {
+          dispatch({ type: 'delete category', payload: payload.old.id })
+        }
+      })
+      .subscribe();
+
     return () => {
-      listener.unsubscribe();
+      transactionsListener.unsubscribe();
+      accountsListener.unsubscribe();
+      categoriesListener.unsubscribe();
     };
   }, []);
 
@@ -108,13 +145,28 @@ const Dashboard: React.FC = () => {
             </div>
             <div>
               {listView === 'transactions' &&
-                <Transactions />
+                <ListView
+                  Form={Transaction} 
+                  Item={TransactionItem}
+                  items={transactions}
+                  modalTitle='Transaction'
+                  />
               }
               {listView === 'accounts' &&
-                <Accounts />
+                <ListView
+                  Form={Account} 
+                  Item={AccountItem}
+                  items={accounts}
+                  modalTitle='Account'
+                  />
               }
               {listView === 'categories' &&
-                <Categories />
+                <ListView
+                  Form={Category} 
+                  Item={CategoryItem}
+                  items={categories}
+                  modalTitle='Category'
+                  />
               }
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { newDatabaseId } from "../utils/calc";
 import { useAppContext } from "../utils/store"
 import { supabase } from '../utils/supabase'
 
@@ -11,7 +12,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
   const { state: { transactions, accounts, categories }, dispatch } = useAppContext()
   const [loading, setLoading] = useState(false)
   const [ values, setValues ] = useState<{
-    amount: any,
+    amount: number,
     currency: any,
     cat: any,
     from: any,
@@ -26,12 +27,11 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
     note: ''
   })
 
-
   useEffect(() => {
     if (data) {
       const {amount, currency, cat, from , to, note} = data
       setValues({
-        amount: amount.toFixed(2),
+        amount,
         currency,
         cat,
         from,
@@ -55,14 +55,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
     setLoading(true)
 
     // get id if updating, or make new id if inserting
-    const id = data ? data.id : transactions.reduce(
-      (p: number, c: any) => {
-        if (p < c.id) 
-          return c.id 
-        return p
-      },
-      0
-    ) + 1
+    const id = data ? data.id : newDatabaseId(transactions)
 
     try {
       const res = await supabase
@@ -122,7 +115,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
                 className='w-full input text-xl' 
                 name='amount' 
                 value={values.amount} 
-                type="number" 
+                type="number"
                 step="0.01"
                 onChange={handleChange} />
             </div>
@@ -147,7 +140,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
               name='cat'
               value={values.cat} 
               onChange={handleChange}>
-              <option value=''></option>
+              <option value=''>Miscellaneous</option>
               {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
@@ -172,22 +165,22 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
               className='w-full input text-xl' 
               name='to'
               value={values.to} 
-              onChange={ handleChange}>
+              onChange={handleChange}>
               <option value=''></option>
               {accounts.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
             </select>
           </div>
         </div>
-        <div className='mb-4'>
+        <div className='mb-2'>
           <div className='mb-1'><span className='text-xs text-gray-400'>Note</span></div>
           <textarea 
             className='w-full input text-xl' 
             name='note'
             value={values.note} 
-            onChange={ handleChange}
+            onChange={handleChange}
             style={{ resize: 'none' }} />
         </div>
-        <div className='mb-6'>
+        <div className='my-6'>
           <button className='button py-6 text-xl w-full' onClick={handleSave}>Save</button>
         </div>
         <div className=''>

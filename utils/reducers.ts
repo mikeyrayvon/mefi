@@ -41,9 +41,9 @@ export const storeReducer = (state: StoreIF, action: ActionIF) => {
         ]
       }
     case 'update transaction': 
-      const updatedIndex = state.transactions.findIndex((t: any) => t.id === action.payload.id)
+      let transactionIndex = state.transactions.findIndex((t: any) => t.id === action.payload.id)
       let updatedTransactions = [...state.transactions]
-      updatedTransactions[updatedIndex] = action.payload
+      updatedTransactions[transactionIndex] = action.payload
       return {
         ...state,
         transactions: updatedTransactions
@@ -53,6 +53,50 @@ export const storeReducer = (state: StoreIF, action: ActionIF) => {
       return {
         ...state,
         transactions: filteredTransactions
+      }
+    case 'insert account': 
+      return {
+        ...state,
+        accounts: [
+          action.payload,
+          ...state.accounts
+        ]
+      }
+    case 'update account': 
+      let accountIndex = state.accounts.findIndex((a: any) => a.id === action.payload.id)
+      let updatedAccounts = [...state.accounts]
+      updatedAccounts[accountIndex] = action.payload
+      return {
+        ...state,
+        accounts: updatedAccounts
+      }
+    case 'delete account': 
+      const filteredAccounts = state.accounts.filter((a: any) => a.id !== action.payload)
+      return {
+        ...state,
+        accounts: filteredAccounts
+      }
+    case 'insert category': 
+      return {
+        ...state,
+        categories: [
+          ...state.categories,
+          action.payload
+        ]
+      }
+    case 'update category': 
+      let categoryIndex = state.categories.findIndex((c: any) => c.id === action.payload.id)
+      let updatedCategories = [...state.categories]
+      updatedCategories[categoryIndex] = action.payload
+      return {
+        ...state,
+        categories: updatedCategories
+      }
+    case 'delete category': 
+      const filteredCategories = state.categories.filter((c: any) => c.id !== action.payload)
+      return {
+        ...state,
+        categories: filteredCategories
       }
     default:
       throw new Error()

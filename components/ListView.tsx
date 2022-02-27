@@ -1,32 +1,46 @@
 import { useState } from 'react';
-import { useAppContext } from '../utils/store'
-import TransactionItem from './TransactionItem'
-import Transaction from './Transaction'
 import Modal from './Modal'
 
-const Transactions: React.FC = () => {
-  const [transactionActive, setTransactionActive] = useState<boolean>(false)
+interface ItemProps {
+  data: any,
+  open: () => void
+}
+
+interface FormProps {
+  data: any,
+  close: () => void
+}
+
+interface Props {
+  Item: React.FC<ItemProps>,
+  Form: React.FC<FormProps>,
+  items: [any],
+  modalTitle?: string,
+  modalClass?: string
+}
+
+const ListView: React.FC<Props> = ({ Item, Form, items, modalTitle, modalClass }) => {
+  const [modalActive, setModalActive] = useState<boolean>(false)
   const [activeData, setActiveData] = useState<any>(null)
-  const { state: {transactions} } = useAppContext()
 
   const handleOpen = (txn = null) => {
-    setTransactionActive(true)
+    setModalActive(true)
     setActiveData(txn)
   }
 
   const handleClose = () => {
-    setTransactionActive(false)
+    setModalActive(false)
     setActiveData(null)
   }
 
   return (
     <div>
-      {transactions.length > 0 &&
+      {items.length > 0 &&
         <ul>
           { 
-            transactions.map((txn: any) => 
+              items.map((txn: any) => 
               <li key={txn.id}>
-                <TransactionItem 
+                <Item 
                   data={txn} 
                   open={() => handleOpen(txn)} />
                 </li>
@@ -39,15 +53,15 @@ const Transactions: React.FC = () => {
         onClick={() => handleOpen(null)}>
         <span className='-mt-1'>+</span>
       </button>
-      {transactionActive &&
-        <Modal name={activeData ? 'Transaction' : 'New Transaction'} close={handleClose}>
-          <Transaction data={activeData} close={handleClose} />
+      {modalActive &&
+        <Modal name={activeData ? modalTitle : `New ${modalTitle}`} close={handleClose} className={modalClass}>
+          <Form data={activeData} close={handleClose} />
         </Modal>
       }
     </div>
   )
 };
 
-export default Transactions
+export default ListView
 
 

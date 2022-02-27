@@ -1,29 +1,26 @@
 import { useEffect, useState } from "react";
+import { accountBalanceFromTransactions } from "../utils/calc";
 import { useAppContext } from "../utils/store";
 
 interface Props {
   data: any
+  open: () => void
 }
 
-const Account: React.FC<Props> = ({ data }) => {
+const Account: React.FC<Props> = ({ data, open }) => {
   const { state: {transactions} } = useAppContext()
   const {name, currency} = data
   const [balance, setBalance] = useState<number>(0)
 
   useEffect(() => {
-    let calcBalance = balance
-    transactions.forEach((t: any) => {
-      if (t.from === data.id) {
-        calcBalance = calcBalance - t.amount
-      } else if (t.to === data.id) {
-        calcBalance = calcBalance + t.amount
-      }
-    })
-    setBalance(calcBalance)
-  }, [transactions])
+    if (transactions && data) {
+      const calcBalance = accountBalanceFromTransactions(data.id, transactions)
+      setBalance(calcBalance)
+    }
+  }, [transactions, data])
 
   return (
-    <div className='border border-white rounded-lg py-2 px-3 mb-2'>
+    <button onClick={open} className='w-full border border-white rounded-lg py-2 px-3 mb-2'>
       <div className='flex justify-between items-center'>
         <div>
           <div><span>{name}</span></div>
@@ -32,7 +29,7 @@ const Account: React.FC<Props> = ({ data }) => {
           <span className='text-2xl'>{balance.toFixed(2)}</span> <span>{currency.toUpperCase()}</span>
         </div>
       </div>
-    </div>
+    </button>
   )
 };
 

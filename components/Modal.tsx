@@ -1,13 +1,14 @@
 import Container from './Container'
 
 interface Props {
-  name?: string,
+  name?: string
   close: () => void
+  className?: string
 }
 
-const Modal: React.FC<Props> = ({ children, name, close }) => {
+const Modal: React.FC<Props> = ({ children, name, close, className }) => {
   return (
-    <div className='z-30 fixed inset-0 bg-black pt-4 pb-12 overflow-y-scroll'>
+    <div className={`z-30 fixed inset-0 bg-black pt-4 pb-12 overflow-y-scroll ${className}`}>
       <Container>
         <div className='flex justify-between items-center'>
           <div>
