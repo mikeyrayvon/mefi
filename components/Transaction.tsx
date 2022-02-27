@@ -35,13 +35,13 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
       const {amount, currency, cat, datetime, from , to, note} = data
 
       setValues({
-        amount,
-        currency,
-        cat,
-        date: datetime.substring(0, 10),
-        from,
-        to,
-        note
+        amount: amount ?? 0,
+        currency: currency ?? 'chf',
+        cat: cat ?? '',
+        date: datetime ? datetime.substring(0, 10) : today.toISOString().substring(0, 10),
+        from: from ?? '',
+        to: to ?? '',
+        note: note ?? ''
       })
     }
   }, [data])
