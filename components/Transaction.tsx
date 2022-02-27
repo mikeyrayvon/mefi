@@ -11,6 +11,7 @@ interface Props {
 const Transaction: React.FC<Props> = ({ data, close }) => {
   const { state: { transactions, accounts, categories }, dispatch } = useAppContext()
   const [loading, setLoading] = useState(false)
+  const today = new Date()
   const [ values, setValues ] = useState<{
     amount: number,
     currency: any,
@@ -23,7 +24,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
     amount: 0,
     currency: 'chf',
     cat: '',
-    date: '2022-01-01',
+    date: today.toISOString().substring(0, 10),
     from: '',
     to: '',
     note: ''
