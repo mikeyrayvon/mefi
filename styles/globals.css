@@ -9,7 +9,7 @@
 @import 'swiper/css';
 
 html, body {
-  @apply bg-black text-white;
+  @apply bg-black text-white overflow-x-hidden;
   font-size: 18px;
 }
 
