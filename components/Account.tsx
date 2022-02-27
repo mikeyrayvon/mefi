@@ -175,7 +175,7 @@ const Account: React.FC<Props> = ({ data, close }) => {
         </div>
       </form>
       {loading &&
-        <div className='absolute inset-0 bg-white bg-opacity-20'></div>
+        <div className='fixed inset-0 bg-white bg-opacity-20'></div>
       }
     </div>
   )
