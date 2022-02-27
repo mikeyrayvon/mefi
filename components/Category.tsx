@@ -20,17 +20,18 @@ const Category: React.FC<Props> = ({ data, close }) => {
     name: '',
     emoji: '',
     budget: 0,
-    type: ''
+    type: 'expense'
   })
 
   useEffect(() => {
     if (data) {
+      console.log(data)
       const {name, emoji, budget, type} = data
       setValues({
-        name,
-        emoji,
-        budget,
-        type
+        name: name ?? '',
+        emoji: emoji ?? '',
+        budget: budget ?? 0,
+        type: type ?? 'expense'
       })
     }
   }, [data])
@@ -77,23 +78,26 @@ const Category: React.FC<Props> = ({ data, close }) => {
 
   const handleDelete = async (event: any) => {
     event.preventDefault()
-    setLoading(true)
+    
+    if (window.confirm("Do you really want to delete this?")) {
+      setLoading(true)
+      
+      try {
+        const res = await supabase
+          .from('categories')
+          .delete()
+          .eq('id', data?.id)
 
-    try {
-      const res = await supabase
-        .from('categories')
-        .delete()
-        .eq('id', data?.id)
-
-      if (res.error) {
-        console.error(res.error)
-        throw new Error()
+        if (res.error) {
+          console.error(res.error)
+          throw new Error()
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+        close()
       }
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setLoading(false)
-      close()
     }
   }
 

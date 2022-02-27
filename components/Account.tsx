@@ -107,23 +107,26 @@ const Account: React.FC<Props> = ({ data, close }) => {
 
   const handleDelete = async (event: any) => {
     event.preventDefault()
-    setLoading(true)
 
-    try {
-      const res = await supabase
-        .from('accounts')
-        .delete()
-        .eq('id', data?.id)
+    if (window.confirm("Do you really want to delete this?")) {
+      setLoading(true)
 
-      if (res.error) {
-        console.error(res.error)
-        throw new Error()
+      try {
+        const res = await supabase
+          .from('accounts')
+          .delete()
+          .eq('id', data?.id)
+
+        if (res.error) {
+          console.error(res.error)
+          throw new Error()
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+        close()
       }
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setLoading(false)
-      close()
     }
   }
 
