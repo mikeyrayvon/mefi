@@ -13,18 +13,21 @@ const Category: React.FC<Props> = ({ data, close }) => {
   const [loading, setLoading] = useState(false)
   const [ values, setValues ] = useState<{
     name: string,
-    emoji: string
+    emoji: string,
+    budget: number
   }>({
     name: '',
-    emoji: ''
+    emoji: '',
+    budget: 0
   })
 
   useEffect(() => {
     if (data) {
-      const {name, emoji} = data
+      const {name, emoji, budget} = data
       setValues({
         name,
-        emoji
+        emoji,
+        budget
       })
     }
   }, [data])
@@ -53,7 +56,8 @@ const Category: React.FC<Props> = ({ data, close }) => {
           id,
           name: values.name,
           emoji: values.emoji,
-          order
+          order,
+          budget: values.budget
         })
       if (res.error) {
         console.error(res.error)
@@ -110,6 +114,24 @@ const Category: React.FC<Props> = ({ data, close }) => {
               value={values.emoji} 
               onChange={handleChange} 
             />
+          </div>
+        </div>
+        <div className='mb-2'>
+          <div className='mb-1'><span className='text-xs text-gray-400'>Budget</span></div>
+          <div className='flex -mx-2 items-center'>
+            <div className='px-2 grow'>
+              <input 
+                className='w-full input text-xl' 
+                name='budget' 
+                value={values.budget} 
+                type="number"
+                step="1"
+                min="0"
+                onChange={handleChange} />
+            </div>
+            <div className='px-2'>
+              <span className='text-xl'>CHF</span>
+            </div>
           </div>
         </div>
         <div className='my-6'>

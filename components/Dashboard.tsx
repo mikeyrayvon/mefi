@@ -31,7 +31,7 @@ const Dashboard: React.FC = () => {
       const transactionsRes = await supabase
         .from('transactions')
         .select()
-        .order('created_at', { ascending: false })
+        .order('datetime', { ascending: false })
 
       if (transactionsRes.error && transactionsRes.status !== 406) {
         throw transactionsRes.error

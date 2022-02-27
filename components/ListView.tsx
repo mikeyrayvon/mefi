@@ -36,7 +36,7 @@ const ListView: React.FC<Props> = ({ Item, Form, items, modalTitle, modalClass }
   return (
     <div>
       {items.length > 0 &&
-        <ul>
+        <ul className='pb-28'>
           { 
               items.map((txn: any) => 
               <li key={txn.id}>

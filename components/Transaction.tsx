@@ -15,6 +15,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
     amount: number,
     currency: any,
     cat: any,
+    date: any,
     from: any,
     to: any,
     note: any
@@ -22,6 +23,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
     amount: 0,
     currency: 'chf',
     cat: '',
+    date: '2022-01-01',
     from: '',
     to: '',
     note: ''
@@ -29,11 +31,13 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
 
   useEffect(() => {
     if (data) {
-      const {amount, currency, cat, from , to, note} = data
+      const {amount, currency, cat, datetime, from , to, note} = data
+
       setValues({
         amount,
         currency,
         cat,
+        date: datetime.substring(0, 10),
         from,
         to,
         note
@@ -56,6 +60,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
 
     // get id if updating, or make new id if inserting
     const id = data ? data.id : newDatabaseId(transactions)
+    const date = new Date(values.date) 
 
     try {
       const res = await supabase
@@ -65,6 +70,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
           amount: values.amount,
           currency: values.currency,
           cat: values.cat == '' ? null : values.cat,
+          datetime: date.toISOString(),
           from: values.from == '' ? null : values.from,
           to: values.to == '' ? null : values.to,
           note: values.note
@@ -117,6 +123,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
                 value={values.amount} 
                 type="number"
                 step="0.01"
+                min="0"
                 onChange={handleChange} />
             </div>
             <div className='px-2 w-1/3'>
@@ -140,9 +147,20 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
               name='cat'
               value={values.cat} 
               onChange={handleChange}>
-              <option value=''>Miscellaneous</option>
+              <option value=''></option>
               {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
+          </div>
+        </div>
+        <div className='mb-2'>
+          <div className='mb-1'><span className='text-xs text-gray-400'>Date</span></div>
+          <div className=''>
+            <input 
+              className='w-full input text-xl' 
+              name='date'
+              type='date'
+              value={values.date} 
+              onChange={handleChange} />
           </div>
         </div>
         <div className='mb-2'>

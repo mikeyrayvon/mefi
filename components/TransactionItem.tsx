@@ -17,13 +17,11 @@ const Transaction: React.FC<Props> = ({ data, open }) => {
       <div className='flex justify-between items-center'>
         <div>
           <div>
-            {txnCat ? (
+            {txnCat &&
               <span>
                 <span className='mr-2'>{txnCat.name}</span><span>{txnCat.emoji}</span>
               </span>
-            ) : (
-              <span>Miscellaneous</span>
-            )}
+            }
           </div>
           <div><span className='text-xs'>{note}</span></div>
         </div>

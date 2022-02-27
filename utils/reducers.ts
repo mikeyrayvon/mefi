@@ -1,4 +1,5 @@
 import { StoreIF } from './store'
+import { Transaction as T } from './types'
 
 interface ActionIF {
   type: string 
@@ -41,12 +42,17 @@ export const storeReducer = (state: StoreIF, action: ActionIF) => {
         ]
       }
     case 'update transaction': 
-      let transactionIndex = state.transactions.findIndex((t: any) => t.id === action.payload.id)
+      let transactionIndex = state.transactions.findIndex((t: T) => t.id === action.payload.id)
       let updatedTransactions = [...state.transactions]
       updatedTransactions[transactionIndex] = action.payload
+      let sortedTransactions = updatedTransactions.sort((a: T, b: T) => {
+        const dateA = new Date(a.datetime)
+        const dateB = new Date(b.datetime)
+        return dateB.getTime() - dateA.getTime()
+      })
       return {
         ...state,
-        transactions: updatedTransactions
+        transactions: sortedTransactions
       }
     case 'delete transaction': 
       const filteredTransactions = state.transactions.filter((t: any) => t.id !== action.payload)
