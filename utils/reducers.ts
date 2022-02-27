@@ -61,10 +61,20 @@ export const storeReducer = (state: StoreIF, action: ActionIF) => {
     }
     case 'insert transaction':
     {
-      const transactions = [
+      const updatedTransactions = [
         action.payload,
         ...state.transactions
       ]
+      const transactions = updatedTransactions.sort((a: T, b: T) => {
+        const dateA = new Date(a.datetime)
+        const dateB = new Date(b.datetime)
+        const timeA = dateA.getTime()
+        const timeB = dateB.getTime()
+        if (timeA === timeB) {
+          return b.amount - a.amount
+        }
+        return dateB.getTime() - dateA.getTime()
+      })
       const accounts = state.accounts.sort((a: any, b: any) => {
         const balanceA = accountBalanceFromTransactions(a.id, transactions)
         const balanceB = accountBalanceFromTransactions(b.id, transactions)
