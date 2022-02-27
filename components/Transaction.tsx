@@ -125,7 +125,8 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
                 className='w-full input text-xl' 
                 name='amount' 
                 value={values.amount} 
-                type="number"
+                inputMode="decimal"
+                type='number'
                 step="0.01"
                 min="0"
                 onChange={handleChange} />

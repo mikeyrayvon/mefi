@@ -149,7 +149,8 @@ const Account: React.FC<Props> = ({ data, close }) => {
                 className='w-full input text-xl' 
                 name='balance' 
                 value={values.balance}
-                type="number" 
+                inputMode="numeric"
+                type='number'
                 step="0.01"
                 onChange={handleChange} />
             </div>
