@@ -14,20 +14,23 @@ const Category: React.FC<Props> = ({ data, close }) => {
   const [ values, setValues ] = useState<{
     name: string,
     emoji: string,
-    budget: number
+    budget: number,
+    type: string
   }>({
     name: '',
     emoji: '',
-    budget: 0
+    budget: 0,
+    type: ''
   })
 
   useEffect(() => {
     if (data) {
-      const {name, emoji, budget} = data
+      const {name, emoji, budget, type} = data
       setValues({
         name,
         emoji,
-        budget
+        budget,
+        type
       })
     }
   }, [data])
@@ -57,7 +60,8 @@ const Category: React.FC<Props> = ({ data, close }) => {
           name: values.name,
           emoji: values.emoji,
           order,
-          budget: values.budget
+          budget: values.budget,
+          type: values.type
         })
       if (res.error) {
         console.error(res.error)
@@ -114,6 +118,21 @@ const Category: React.FC<Props> = ({ data, close }) => {
               value={values.emoji} 
               onChange={handleChange} 
             />
+          </div>
+        </div>
+        <div className='mb-2'>
+          <div className='mb-1'><span className='text-xs text-gray-400'>Type</span></div>
+          <div className=''>
+            <select 
+              className='w-full input text-xl' 
+              name='type'
+              value={values.type} 
+              onChange={handleChange}>
+              <option value='expense'>Expense</option>
+              <option value='income'>Income</option>
+              <option value='transfer'>Transfer</option>
+              <option value=''>Other</option>
+            </select>
           </div>
         </div>
         <div className='mb-2'>
