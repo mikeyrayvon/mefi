@@ -8,7 +8,7 @@ interface Props {
 
 const Transaction: React.FC<Props> = ({ data, open }) => {
   const { state: { accounts, categories }, dispatch } = useAppContext()
-  const { amount, currency, cat, note, from, to } = data
+  const { amount, currency, cat, datetime, note, from, to } = data
   
   const txnCat = categories.find((c: C) => c.id == cat)
 

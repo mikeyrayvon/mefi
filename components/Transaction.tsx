@@ -14,7 +14,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
   const today = new Date()
   const [ values, setValues ] = useState<{
     amount: number,
-    currency: any,
+    currency: string,
     cat: any,
     date: any,
     from: any,
@@ -35,7 +35,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
       const {amount, currency, cat, datetime, from , to, note} = data
 
       setValues({
-        amount: amount ?? 0,
+        amount: amount.toFixed(2) ?? 0.00,
         currency: currency ?? 'chf',
         cat: cat ?? '',
         date: datetime ? datetime.substring(0, 10) : today.toISOString().substring(0, 10),

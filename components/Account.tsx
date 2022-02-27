@@ -25,7 +25,7 @@ const Account: React.FC<Props> = ({ data, close }) => {
   useEffect(() => {
     let txnBalance = 0
     if (data && transactions) {
-      txnBalance = accountBalanceFromTransactions(data.id, transactions)
+      txnBalance = accountBalanceFromTransactions(data.id, transactions).toFixed(2)
       setInitialBalance(txnBalance)
     } 
     setValues(prevState => {

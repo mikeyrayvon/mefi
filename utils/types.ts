@@ -1,6 +1,7 @@
 export interface Transaction {
   id: number,
   created_at: string,
+  amount: number,
   datetime: string,
   type: string,
   from: number,
