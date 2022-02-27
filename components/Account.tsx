@@ -53,7 +53,7 @@ const Account: React.FC<Props> = ({ data, close }) => {
     setValues(prevState => {
       return {
         ...prevState,
-        [event.target.name]: event.target.name === 'balance' ? parseFloat(event.target.value) : event.target.value
+        [event.target.name]: event.target.value
       }
     })
   }
