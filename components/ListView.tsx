@@ -2,30 +2,36 @@ import { useState } from 'react';
 import Modal from './Modal'
 
 interface ItemProps {
-  data: any,
+  data: any
   open: () => void
 }
 
 interface FormProps {
-  data: any,
+  data: any
   close: () => void
 }
 
+interface ListProps {
+  items: any[]
+  handleOpen: (a: any) => void
+}
+
 interface Props {
-  Item: React.FC<ItemProps>,
-  Form: React.FC<FormProps>,
-  items: [any],
-  modalTitle?: string,
+  Item: React.FC<ItemProps>
+  Form: React.FC<FormProps>
+  items: [any]
+  List?: React.FC<ListProps>
+  modalTitle?: string
   modalClass?: string
 }
 
-const ListView: React.FC<Props> = ({ Item, Form, items, modalTitle, modalClass }) => {
+const ListView: React.FC<Props> = ({ Item, Form, items, List, modalTitle, modalClass }) => {
   const [modalActive, setModalActive] = useState<boolean>(false)
   const [activeData, setActiveData] = useState<any>(null)
 
-  const handleOpen = (txn = null) => {
+  const handleOpen = (item = null) => {
     setModalActive(true)
-    setActiveData(txn)
+    setActiveData(item)
   }
 
   const handleClose = () => {
@@ -36,17 +42,23 @@ const ListView: React.FC<Props> = ({ Item, Form, items, modalTitle, modalClass }
   return (
     <div>
       {items.length > 0 &&
-        <ul className='pb-28'>
-          { 
-              items.map((txn: any) => 
-              <li key={txn.id}>
-                <Item 
-                  data={txn} 
-                  open={() => handleOpen(txn)} />
-                </li>
-            ) 
-          }
-        </ul>
+        <div className='pb-28'>
+          {List ? (
+            <List items={items} handleOpen={handleOpen} />
+          ) : (
+            <ul>
+              { 
+                  items.map((item: any) => 
+                  <li key={item.id}>
+                    <Item 
+                      data={item} 
+                      open={() => handleOpen(item)} />
+                    </li>
+                ) 
+              }
+            </ul>
+          )}
+        </div>
       }
       <button 
         className='z-20 w-16 h-16 rounded-full flex justify-center items-center text-[36px] fixed bottom-8 right-8 border border-white bg-black'

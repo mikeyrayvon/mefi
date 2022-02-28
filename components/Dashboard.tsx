@@ -11,6 +11,7 @@ import CategoryItem from './CategoryItem'
 import Category from './Category'
 import TransactionItem from './TransactionItem'
 import Transaction from './Transaction'
+import TransactionList from './TransactionList'
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true)
@@ -149,6 +150,7 @@ const Dashboard: React.FC = () => {
                   Form={Transaction} 
                   Item={TransactionItem}
                   items={transactions}
+                  List={TransactionList}
                   modalTitle='Transaction'
                   />
               }
