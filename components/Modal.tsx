@@ -8,7 +8,7 @@ interface Props {
 
 const Modal: React.FC<Props> = ({ children, name, close, className }) => {
   return (
-    <div className={`z-30 fixed inset-0 bg-black pt-4 pb-12 overscroll-none ${className}`}>
+    <div className={`z-30 fixed inset-0 bg-black pt-4 pb-12 overscroll-contain ${className}`}>
       <Container>
         <div className='flex justify-between items-center'>
           <div>
