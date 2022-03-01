@@ -21,5 +21,8 @@ export interface Category {
   id: number,
   created_at: string,
   name: string,
-  emoji: string
+  emoji?: string,
+  budget?: number,
+  order: number,
+  type?: string
 }
