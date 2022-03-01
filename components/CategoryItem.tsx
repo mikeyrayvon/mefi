@@ -8,12 +8,12 @@ const CategoryItem: React.FC<Props> = ({ data, open }) => {
 
   return (
     <button onClick={open} className='w-full border border-white rounded-lg py-2 px-3 mb-2'>
-      <div className='flex items-center justify-between'>
+      <div className='text-center'>
         <div>
-          <span>{name}</span>
+          <span className='text-3xl'>{emoji}</span>
         </div>
         <div>
-          <span>{emoji}</span>
+          <span className='text-xs'>{name}</span>
         </div>
       </div>
     </button>

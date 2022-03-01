@@ -39,14 +39,3 @@ const TransactionList: React.FC<Props> = ({ items, handleOpen }) => {
 }
 
 export default TransactionList
-
-/*
-
-
-
-
-
-
-
-
-*/
