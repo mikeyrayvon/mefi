@@ -82,7 +82,8 @@ const Account: React.FC<Props> = ({ data, close }) => {
         const amount = increase ? values.balance - initialBalance : initialBalance - values.balance
         const newTxnId = newDatabaseId(transactions)
         const updateCat = categories.find((c: any) => c.name == 'Update')
-        const txnRes = await supabase
+        if (updateCat) {
+          const txnRes = await supabase
           .from('transactions')
           .upsert({
             id: newTxnId,
@@ -96,6 +97,9 @@ const Account: React.FC<Props> = ({ data, close }) => {
             console.error(txnRes.error)
             throw new Error()
           }
+        } else {
+          throw new Error('no Update Category')
+        }
       }
     } catch (e) {
       console.error(e)
