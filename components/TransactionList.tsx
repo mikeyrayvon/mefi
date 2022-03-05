@@ -8,23 +8,30 @@ import { useAppContext } from '../utils/store'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
 
 const TransactionList: React.FC = ({ }) => {
-  const { state: {monthlyTransactions}, dispatch } = useAppContext()
+  const { state: {monthlyTransactions, transactions}, dispatch } = useAppContext()
   const [modalActive, setModalActive] = useState<boolean>(false)
   const [activeData, setActiveData] = useState<any>(null)
   const [month, setMonth] = useState<number>(0)
   const [year, setYear] = useState<number>(0)
   const [monthlyTotal, setMonthlyTotal] = useState<number>(0)
+  const [firstSet, setFirstSet] = useState<boolean>(false)
 
   useEffect(() => {
-    const date = new Date()
-    const todaysMonth = date.getMonth()
-    const todaysYear = date.getFullYear()
-    setMonth(todaysMonth)
-    setYear(todaysYear)
-    dispatch({ type: 'set monthly transactions', payload: {month: todaysMonth, year: todaysYear} })
-  }, [])
+    if (!firstSet) {
+      const date = new Date()
+      const todaysMonth = date.getMonth()
+      const todaysYear = date.getFullYear()
+      setMonth(todaysMonth)
+      setYear(todaysYear)
+      dispatch({ type: 'set monthly transactions', payload: {month: todaysMonth, year: todaysYear} })
+      setFirstSet(true)
+    } else {
+      dispatch({ type: 'set monthly transactions', payload: {month, year} })
+    }
+  }, [transactions])
 
   useEffect(() => {
+    // update the month's total
     const total = monthlyTransactions.reduce((p: number, c: T) => {
       return p + c.amount
     }, 0)
@@ -123,7 +130,10 @@ const TransactionList: React.FC = ({ }) => {
       </button>
       {modalActive &&
         <Modal name={activeData ? 'Transaction' : 'New Transaction'} close={handleClose}>
-          <Transaction data={activeData} close={handleClose} />
+          <Transaction 
+            data={activeData} 
+            close={handleClose} 
+          />
         </Modal>
       }
     </div>
