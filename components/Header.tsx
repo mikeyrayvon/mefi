@@ -19,7 +19,7 @@ const Header: React.FC = () => {
           <div><span className='text-2xl mr-3'>😊</span><span>Happy Money</span></div>
           <div>
             {user &&
-              <button className='button text-xs' onClick={() => signOut()}>Sign Out</button>
+              <button className='text-xs underline' onClick={() => signOut()}>Sign Out</button>
             }
           </div>
         </div>

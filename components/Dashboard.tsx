@@ -4,15 +4,9 @@ import { supabase } from '../utils/supabase'
 import { useAppContext } from '../utils/store'
 import { Auth } from '@supabase/ui'
 
-import ListView from './ListView'
-import AccountItem from './AccountItem'
-import Account from './Account'
-import CategoryItem from './CategoryItem'
-import Category from './Category'
-import TransactionItem from './TransactionItem'
-import Transaction from './Transaction'
 import TransactionList from './TransactionList'
 import CategoryList from './CategoryList'
+import AccountList from './AccountList'
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true)
@@ -149,7 +143,12 @@ const Dashboard: React.FC = () => {
               {listView === 'transactions' && transactions.length > 0 &&
                 <TransactionList />
               }
-              
+              {listView === 'accounts' &&
+                <AccountList />
+              }
+              {listView === 'categories' &&
+                <CategoryList />
+              }
             </div>
           </div>
         )}
@@ -159,20 +158,3 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard
-/*{listView === 'accounts' &&
-  <ListView
-    Form={Account} 
-    Item={AccountItem}
-    items={accounts}
-    modalTitle='Account'
-    />
-}
-{listView === 'categories' &&
-  <ListView
-    Form={Category} 
-    Item={CategoryItem}
-    items={categories}
-    List={CategoryList}
-    modalTitle='Category'
-    />
-}*/
