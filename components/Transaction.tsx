@@ -83,6 +83,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
       }
     } catch (e) {
       console.error(e)
+      alert(e)
     } finally {
       setLoading(false)
       close()
@@ -107,6 +108,7 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
         }
       } catch (e) {
         console.error(e)
+        alert(e)
       } finally {
         setLoading(false)
         close()
