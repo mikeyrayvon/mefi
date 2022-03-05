@@ -146,32 +146,10 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             <div>
-              {listView === 'transactions' &&
-                <ListView
-                  Form={Transaction} 
-                  Item={TransactionItem}
-                  items={transactions}
-                  List={TransactionList}
-                  modalTitle='Transaction'
-                  />
+              {listView === 'transactions' && transactions.length > 0 &&
+                <TransactionList />
               }
-              {listView === 'accounts' &&
-                <ListView
-                  Form={Account} 
-                  Item={AccountItem}
-                  items={accounts}
-                  modalTitle='Account'
-                  />
-              }
-              {listView === 'categories' &&
-                <ListView
-                  Form={Category} 
-                  Item={CategoryItem}
-                  items={categories}
-                  List={CategoryList}
-                  modalTitle='Category'
-                  />
-              }
+              
             </div>
           </div>
         )}
@@ -181,3 +159,20 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard
+/*{listView === 'accounts' &&
+  <ListView
+    Form={Account} 
+    Item={AccountItem}
+    items={accounts}
+    modalTitle='Account'
+    />
+}
+{listView === 'categories' &&
+  <ListView
+    Form={Category} 
+    Item={CategoryItem}
+    items={categories}
+    List={CategoryList}
+    modalTitle='Category'
+    />
+}*/

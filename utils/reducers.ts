@@ -40,6 +40,19 @@ export const storeReducer = (state: StoreIF, action: ActionIF) => {
         transactions
       }
     }
+    case 'set monthly transactions': 
+    {
+      const monthlyTransactions = state.transactions.filter((item) => {
+        const itemDate = new Date(item.datetime)
+        const itemMonth = itemDate.getMonth()
+        const itemYear = itemDate.getFullYear()
+        return itemMonth === action.payload.month && itemYear === action.payload.year
+      })
+      return {
+        ...state,
+        monthlyTransactions
+      }
+    }
     case 'set accounts':
     {
       const accounts = action.payload.sort((a: any, b: any) => {

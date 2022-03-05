@@ -8,3 +8,10 @@ export const formatDateStr = (d) => {
   }
   return new Intl.DateTimeFormat('en-US', options).format(date)
 }
+
+export const getMonthName = (m) => {
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ]
+  return monthNames[m]
+}

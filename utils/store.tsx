@@ -1,21 +1,24 @@
 import { createContext, useReducer, useContext } from 'react'
 import { storeReducer } from './reducers'
 import { Session } from '@supabase/supabase-js'
+import { Transaction as T, Account as A, Category as C } from './types'
 
 export interface StoreIF {
-  data: any,
-  session: Session | null,
-  transactions: any,
-  accounts: any,
-  categories: any
+  data: null
+  session: Session | null
+  transactions: T[]
+  accounts: A[]
+  categories: C[]
+  monthlyTransactions: T[]
 }
 
 const initialStoreState = {
   data: null,
   session: null,
-  transactions : [],
+  transactions: [],
   accounts: [],
-  categories: []
+  categories: [],
+  monthlyTransactions: []
 }
 
 const AppContext = createContext<{
