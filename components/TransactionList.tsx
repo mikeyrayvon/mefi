@@ -123,8 +123,16 @@ const TransactionList: React.FC = ({ }) => {
 
                 if (newDay) {
                   listDate = item.datetime
-                  dailyTotal = monthlyTransactions.reduce((p: number, c: T) => {
-                    return c.datetime.substring(0, 10) === listDate.substring(0, 10) ? p + c.amount : p
+                  dailyTotal = monthlyTransactions.reduce((prev: number, txn: T) => {
+                    if (txn.datetime.substring(0, 10) === listDate.substring(0, 10) && txn.cat) {
+                      const cat = categories.find(c => c.id === txn.cat)
+                      if (cat?.type === 'expense') {
+                        return prev - txn.amount
+                      } else if (cat?.type === 'income') {
+                        return prev + txn.amount
+                      }
+                    }
+                    return prev
                   }, 0)
                 }
 
