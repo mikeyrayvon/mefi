@@ -20,9 +20,6 @@ const Dashboard: React.FC = () => {
     }
   }, [user]);
 
-  if (!user) 
-    return null
-
   const fetchData = async () => {
     if (!user) {
       return
@@ -124,6 +121,9 @@ const Dashboard: React.FC = () => {
       categoriesListener.unsubscribe();
     };
   }, []);
+
+  if (!user) 
+    return null
 
   return (
     <>
