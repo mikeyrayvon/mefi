@@ -20,7 +20,7 @@ const Account: React.FC<Props> = ({ data, open }) => {
   }, [transactions, data])
 
   return (
-    <button onClick={open} className='w-full border border-white rounded-lg py-2 px-3 mb-2'>
+    <button onClick={open} className='w-full button py-6 px-3 mb-4'>
       <div className='flex justify-between items-center'>
         <div>
           <div><span>{name}</span></div>

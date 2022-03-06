@@ -13,7 +13,7 @@ const Transaction: React.FC<Props> = ({ data, open }) => {
   const txnCat = categories.find((c: C) => c.id == cat)
 
   return (
-    <button onClick={open} className='w-full text-left border border-white rounded-lg py-2 px-3 mb-2'>
+    <button onClick={open} className='w-full text-left button py-2 px-3 mb-2'>
       <div className='flex justify-between items-center'>
         <div>
           <div>

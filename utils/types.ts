@@ -3,11 +3,11 @@ export interface Transaction {
   created_at: string,
   amount: number,
   datetime: string,
-  type: string,
   from: number,
-  to?: number,
-  cat?: number,
-  note?: string
+  to?: number | null,
+  cat?: number | null,
+  note?: string | null,
+  currency: string
 }
 
 export interface Account {

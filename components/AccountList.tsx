@@ -4,6 +4,7 @@ import { Account as A } from '../utils/types'
 import Account from './Account'
 import Modal from './Modal'
 import { useAppContext } from '../utils/store'
+import AddItemButton from './AddItemButton'
 
 const AccountList: React.FC = ({ }) => {
   const { state: {accounts}, dispatch } = useAppContext()
@@ -27,7 +28,7 @@ const AccountList: React.FC = ({ }) => {
     <div>
       <div className='pb-28'>
         {accounts.length > 0 ? (
-          <ul>
+          <ul className='pt-8'>
             { 
               accounts.map((item: A, i) => {     
                 return (
@@ -45,11 +46,7 @@ const AccountList: React.FC = ({ }) => {
           <div className='text-center pt-24'><span className='text-gray-300 text-xs'>No accounts</span></div>
         )}
       </div>
-      <button 
-        className='z-20 w-16 h-16 rounded-full flex justify-center items-center text-[36px] fixed bottom-8 right-8 border border-white bg-black'
-        onClick={() => handleOpen(null)}>
-        <span className='-mt-1'>+</span>
-      </button>
+      <AddItemButton handleClick={() => handleOpen(null)} />
       {modalActive &&
         <Modal name={activeData ? 'Account' : 'New Account'} close={handleClose}>
           <Account data={activeData} close={handleClose} />

@@ -6,36 +6,53 @@ import Transaction from './Transaction'
 import Modal from './Modal'
 import { useAppContext } from '../utils/store'
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi'
+import AddItemButton from './AddItemButton'
 
 const TransactionList: React.FC = ({ }) => {
-  const { state: {monthlyTransactions, transactions}, dispatch } = useAppContext()
+  const { state: {monthlyTransactions, transactions, categories}, dispatch } = useAppContext()
   const [modalActive, setModalActive] = useState<boolean>(false)
   const [activeData, setActiveData] = useState<any>(null)
-  const [month, setMonth] = useState<number>(0)
-  const [year, setYear] = useState<number>(0)
-  const [monthlyTotal, setMonthlyTotal] = useState<number>(0)
-  const [firstSet, setFirstSet] = useState<boolean>(false)
+  const [monthlyIncome, setMonthlyIncome] = useState<number>(0)
+  const [monthlyExpenses, setMonthlyExpenses] = useState<number>(0)
+
+  const date = new Date()
+  const todaysMonth = date.getMonth()
+  const todaysYear = date.getFullYear()
+  const [month, setMonth] = useState<number>(todaysMonth)
+  const [year, setYear] = useState<number>(todaysYear)
 
   useEffect(() => {
-    if (!firstSet) {
-      const date = new Date()
-      const todaysMonth = date.getMonth()
-      const todaysYear = date.getFullYear()
-      setMonth(todaysMonth)
-      setYear(todaysYear)
-      dispatch({ type: 'set monthly transactions', payload: {month: todaysMonth, year: todaysYear} })
-      setFirstSet(true)
-    } else {
+    // get monthly transactions
+    if (transactions.length > 0) {
       dispatch({ type: 'set monthly transactions', payload: {month, year} })
     }
   }, [transactions])
 
   useEffect(() => {
-    // update the month's total
-    const total = monthlyTransactions.reduce((p: number, c: T) => {
-      return p + c.amount
+    // update the month's totals
+
+    const income = monthlyTransactions.reduce((prev: number, txn: T) => {
+      if (txn.cat) {
+        const cat = categories.find(cat => cat.id === txn.cat)
+        if (cat && cat.type === 'income') {
+          return prev + txn.amount
+        }
+      }
+      return prev
     }, 0)
-    setMonthlyTotal(total)
+    setMonthlyIncome(income)
+
+    const expenses = monthlyTransactions.reduce((prev: number, txn: T) => {
+      if (txn.cat) {
+        const cat = categories.find(cat => cat.id === txn.cat)
+        if (cat && cat.type === 'expense') {
+          return prev + txn.amount
+        }
+      }
+      return prev
+    }, 0)
+    setMonthlyExpenses(expenses)
+
   }, [monthlyTransactions])
 
   const handleOpen = (item: T | null) => {
@@ -76,13 +93,22 @@ const TransactionList: React.FC = ({ }) => {
   return (
     <div>
       <div className='pb-28'>
-        <div className='flex mb-2 -mx-2'>
+        <div className='flex mb-2 -mx-2 pb-2 border-b border-b-gray-600'>
           <div className='px-2'>
             <button className='h-full px-4' onClick={() => updateMonth(0)}><FiArrowLeft /></button>
           </div>
           <div className='text-center p-2 grow'>
-            <div><h3 className='text-sm'>{getMonthName(month)}, {year}</h3></div>
-            <div><span className='text-xs'>{monthlyTotal} CHF</span></div>
+            <div className='mb-2'><h3 className=''>{getMonthName(month)}, {year}</h3></div>
+            <div className='flex text-xs'>
+              <div className='w-1/2'>
+                <h4>Income</h4>
+                <span>{monthlyIncome} CHF</span>
+              </div>
+              <div className='w-1/2'>
+                <h4>Expenses</h4>
+                <span>{monthlyExpenses} CHF</span>
+              </div>
+            </div>
           </div>
           <div className='px-2'>
             <button className='h-full px-4' onClick={() => updateMonth(1)}><FiArrowRight /></button>
@@ -105,7 +131,7 @@ const TransactionList: React.FC = ({ }) => {
                 return (
                   <li key={item.id}>
                     {newDay &&
-                      <div className='pt-1 pb-2 px-2 flex justify-between text-xs text-gray-400'>
+                      <div className='pt-3 pb-2 px-2 flex justify-between text-xs text-gray-400'>
                         <span className=''>{formatDateStr(listDate)}</span>
                         <span className=''>{dailyTotal.toFixed(2)} CHF</span>
                       </div>
@@ -123,11 +149,7 @@ const TransactionList: React.FC = ({ }) => {
           <div className='text-center pt-24'><span className='text-gray-300 text-xs'>No transactions</span></div>
         )}
       </div>
-      <button 
-        className='z-20 w-16 h-16 rounded-full flex justify-center items-center text-[36px] fixed bottom-8 right-8 border border-white bg-black'
-        onClick={() => handleOpen(null)}>
-        <span className='-mt-1'>+</span>
-      </button>
+      <AddItemButton handleClick={() => handleOpen(null)} />
       {modalActive &&
         <Modal name={activeData ? 'Transaction' : 'New Transaction'} close={handleClose}>
           <Transaction 

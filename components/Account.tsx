@@ -50,6 +50,7 @@ const Account: React.FC<Props> = ({ data, close }) => {
   }, [data])
 
   const handleChange = (event: any) => {
+    console.log(event.target.value)
     setValues(prevState => {
       return {
         ...prevState,
@@ -141,7 +142,7 @@ const Account: React.FC<Props> = ({ data, close }) => {
           <div className='mb-1'><span className='text-xs text-gray-400'>Name</span></div>
           <input 
             className='w-full input text-xl' 
-            name='note'
+            name='name'
             value={values.name} 
             onChange={handleChange} />
         </div>
