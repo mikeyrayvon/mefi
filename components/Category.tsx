@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { newDatabaseOrder, newDatabaseId } from "../utils/calc";
 import { useAppContext } from "../utils/store"
 import { supabase } from '../utils/supabase'
+import { Auth } from '@supabase/ui' 
 
 interface Props {
   data?: any,
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const Category: React.FC<Props> = ({ data, close }) => {
+  const { user } = Auth.useUser()
   const { state: { transactions, accounts, categories }, dispatch } = useAppContext()
   const [loading, setLoading] = useState(false)
   const [ values, setValues ] = useState<{
@@ -36,6 +38,9 @@ const Category: React.FC<Props> = ({ data, close }) => {
     }
   }, [data])
 
+  if (!user) 
+    return null 
+
   const handleChange = (event: any) => {
     setValues(prevState => {
       return {
@@ -62,7 +67,8 @@ const Category: React.FC<Props> = ({ data, close }) => {
           emoji: values.emoji,
           order,
           budget: values.budget,
-          type: values.type
+          type: values.type,
+          uid: user.id
         })
       if (res.error) {
         console.error(res.error)

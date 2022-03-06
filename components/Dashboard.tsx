@@ -20,13 +20,21 @@ const Dashboard: React.FC = () => {
     }
   }, [user]);
 
+  if (!user) 
+    return null
+
   const fetchData = async () => {
+    if (!user) {
+      return
+    }
+
     setLoading(true) 
 
     try {
       const transactionsRes = await supabase
         .from('transactions')
         .select()
+        .eq('uid', user.id)
         .order('datetime', { ascending: false })
 
       if (transactionsRes.error && transactionsRes.status !== 406) {
@@ -38,6 +46,7 @@ const Dashboard: React.FC = () => {
       const accountsRes = await supabase
         .from('accounts')
         .select()
+        .eq('uid', user.id)
 
       if (accountsRes.error && accountsRes.status !== 406) {
         throw accountsRes.error
@@ -48,6 +57,7 @@ const Dashboard: React.FC = () => {
       const categoriesRes = await supabase
         .from('categories')
         .select()
+        .eq('uid', user.id)
         .order('order')
 
       if (categoriesRes.error && categoriesRes.status !== 406) {

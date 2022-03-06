@@ -7,14 +7,16 @@ export interface Transaction {
   to?: number | null,
   cat?: number | null,
   note?: string | null,
-  currency: string
+  currency: string,
+  uid: string
 }
 
 export interface Account {
   id: number,
   created_at: string,
   name: string,
-  balance: number
+  balance: number,
+  uid: string
 }
 
 export interface Category {
@@ -24,5 +26,6 @@ export interface Category {
   emoji?: string,
   budget?: number,
   order: number,
-  type?: string
+  type?: string,
+  uid: string
 }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
-import { newDatabaseId } from "../utils/calc";
+import { newDatabaseId } from "../utils/calc"
 import { useAppContext } from "../utils/store"
 import { supabase } from '../utils/supabase'
+import { Auth } from '@supabase/ui'
 
 interface Props {
   data?: any,
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const Transaction: React.FC<Props> = ({ data, close }) => {
+  const { user } = Auth.useUser()
   const { state: { transactions, accounts, categories }, dispatch } = useAppContext()
   const [loading, setLoading] = useState(false)
   const today = new Date()
@@ -46,6 +48,9 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
     }
   }, [data])
 
+  if (!user) 
+    return null 
+
   const handleChange = (event: any) => {
     setValues(prevState => {
       return {
@@ -74,7 +79,8 @@ const Transaction: React.FC<Props> = ({ data, close }) => {
           datetime: date.toISOString(),
           from: values.from == '' ? null : values.from,
           to: values.to == '' ? null : values.to,
-          note: values.note
+          note: values.note,
+          uid: user.id
         })
 
       if (res.error) {

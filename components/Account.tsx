@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useAppContext } from "../utils/store"
 import { supabase } from '../utils/supabase'
 import { accountBalanceFromTransactions, newDatabaseId } from '../utils/calc'
+import { Auth } from '@supabase/ui'
 
 interface Props {
   data?: any,
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const Account: React.FC<Props> = ({ data, close }) => {
+  const { user } = Auth.useUser()
   const { state: { transactions, accounts, categories }, dispatch } = useAppContext()
   const [loading, setLoading] = useState(false)
   const [initialBalance, setInitialBalance] = useState(0)
@@ -20,7 +22,7 @@ const Account: React.FC<Props> = ({ data, close }) => {
     name: '',
     currency: 'chf',
     balance: 0
-  })
+  })  
 
   useEffect(() => {
     let txnBalance = 0
@@ -48,6 +50,9 @@ const Account: React.FC<Props> = ({ data, close }) => {
       })
     }
   }, [data])
+
+  if (!user) 
+    return null 
 
   const handleChange = (event: any) => {
     console.log(event.target.value)
@@ -92,7 +97,8 @@ const Account: React.FC<Props> = ({ data, close }) => {
             currency: values.currency,
             cat: updateCat.id,
             from: increase ? null : id,
-            to: !increase ? null : id
+            to: !increase ? null : id,
+            uid: user.id
           })
           if (txnRes.error) {
             console.error(txnRes.error)
