@@ -70,60 +70,59 @@ const Dashboard: React.FC = () => {
   }
 
   useEffect(() => {
-    const transactionsListener = supabase
-      .from("transactions")
-      .on("*", (payload) => {
-        if (payload.eventType === "INSERT") {
-          dispatch({ type: 'insert transaction', payload: payload.new })
-        }
-        if (payload.eventType === 'UPDATE') {
-          dispatch({ type: 'update transaction', payload: payload.new })
-        }
-        if (payload.eventType === 'DELETE') {
-          dispatch({ type: 'delete transaction', payload: payload.old.id })
-        }
-      })
-      .subscribe();
+    if (user) {
+      const transactionsListener = supabase
+        .from(`transactions:uid=eq.${user.id}`)
+        .on("*", (payload) => {
+          if (payload.eventType === "INSERT") {
+            dispatch({ type: 'insert transaction', payload: payload.new })
+          }
+          if (payload.eventType === 'UPDATE') {
+            dispatch({ type: 'update transaction', payload: payload.new })
+          }
+          if (payload.eventType === 'DELETE') {
+            dispatch({ type: 'delete transaction', payload: payload.old.id })
+          }
+        })
+        .subscribe()
 
-    const accountsListener = supabase
-      .from("accounts")
-      .on("*", (payload) => {
-        if (payload.eventType === "INSERT") {
-          dispatch({ type: 'insert account', payload: payload.new })
-        }
-        if (payload.eventType === 'UPDATE') {
-          dispatch({ type: 'update account', payload: payload.new })
-        }
-        if (payload.eventType === 'DELETE') {
-          dispatch({ type: 'delete account', payload: payload.old.id })
-        }
-      })
-      .subscribe();
+      const accountsListener = supabase
+        .from(`accounts:uid=eq.${user.id}`)
+        .on("*", (payload) => {
+          if (payload.eventType === "INSERT") {
+            dispatch({ type: 'insert account', payload: payload.new })
+          }
+          if (payload.eventType === 'UPDATE') {
+            dispatch({ type: 'update account', payload: payload.new })
+          }
+          if (payload.eventType === 'DELETE') {
+            dispatch({ type: 'delete account', payload: payload.old.id })
+          }
+        })
+        .subscribe()
 
-    const categoriesListener = supabase
-      .from("categories")
-      .on("*", (payload) => {
-        if (payload.eventType === "INSERT") {
-          dispatch({ type: 'insert category', payload: payload.new })
-        }
-        if (payload.eventType === 'UPDATE') {
-          dispatch({ type: 'update category', payload: payload.new })
-        }
-        if (payload.eventType === 'DELETE') {
-          dispatch({ type: 'delete category', payload: payload.old.id })
-        }
-      })
-      .subscribe();
+      const categoriesListener = supabase
+        .from(`categories:uid=eq.${user.id}`)
+        .on("*", (payload) => {
+          if (payload.eventType === "INSERT") {
+            dispatch({ type: 'insert category', payload: payload.new })
+          }
+          if (payload.eventType === 'UPDATE') {
+            dispatch({ type: 'update category', payload: payload.new })
+          }
+          if (payload.eventType === 'DELETE') {
+            dispatch({ type: 'delete category', payload: payload.old.id })
+          }
+        })
+        .subscribe()
 
-    return () => {
-      transactionsListener.unsubscribe();
-      accountsListener.unsubscribe();
-      categoriesListener.unsubscribe();
-    };
-  }, []);
-
-  if (!user) 
-    return null
+      return () => {
+        transactionsListener.unsubscribe()
+        accountsListener.unsubscribe()
+        categoriesListener.unsubscribe()
+      }
+    }
+  }, [user]);
 
   return (
     <>
