@@ -7,12 +7,15 @@ import { Auth } from '@supabase/ui'
 import TransactionList from './TransactionList'
 import CategoryList from './CategoryList'
 import AccountList from './AccountList'
+import Modal from './Modal'
+import Settings from './Settings'
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [listView, setListView] = useState('transactions')
+  const [showSettings, setShowSettings] = useState(false)
   const { user } = Auth.useUser()
-  const { state: {transactions, accounts, categories}, dispatch } = useAppContext()
+  const { state: {transactions, accounts, categories, settings}, dispatch } = useAppContext()
 
   useEffect(() => {
     if (user) {
@@ -61,6 +64,17 @@ const Dashboard: React.FC = () => {
         throw categoriesRes.error
       } else if (categoriesRes.data) {
         dispatch({ type: 'set categories', payload: categoriesRes.data })
+      }
+
+      const settingsRes = await supabase
+        .from('settings')
+        .select()
+        .eq('uid', user.id)
+
+      if (settingsRes.error && settingsRes.status !== 406) {
+        throw settingsRes.error
+      } else if (settingsRes.data) {
+        dispatch({ type: 'set settings', payload: settingsRes.data[0] })
       }
     } catch (e) {
       console.error(e)
@@ -116,10 +130,20 @@ const Dashboard: React.FC = () => {
         })
         .subscribe()
 
+      const settingsListener = supabase
+        .from(`settings:uid=eq.${user.id}`)
+        .on("*", (payload) => {
+          if (payload.eventType === 'UPDATE') {
+            dispatch({ type: 'update settings', payload: payload.new })
+          }
+        })
+        .subscribe()
+
       return () => {
         transactionsListener.unsubscribe()
         accountsListener.unsubscribe()
         categoriesListener.unsubscribe()
+        settingsListener.unsubscribe()
       }
     }
   }, [user]);
@@ -132,20 +156,25 @@ const Dashboard: React.FC = () => {
         ) : (
           <div>
             <div className='flex -mx-1 mb-3'>
-              <div className='w-1/3 px-1'>
+              <div className='w-1/4 px-1'>
                 <button 
                   className={`button text-xs w-full ${listView === 'transactions' ? 'bg-gray-700' : ''}`} 
                   onClick={() => setListView('transactions')}>Txns</button>
               </div>
-              <div className='w-1/3 px-1'>
+              <div className='w-1/4 px-1'>
                 <button 
                   className={`button text-xs w-full ${listView === 'accounts' ? 'bg-gray-700' : ''}`}
                   onClick={() => setListView('accounts')}>Accts</button>
               </div>
-              <div className='w-1/3 px-1'>
+              <div className='w-1/4 px-1'>
                 <button 
                   className={`button text-xs w-full ${listView === 'categories' ? 'bg-gray-700' : ''}`}
                   onClick={() => setListView('categories')}>Cats</button>
+              </div>
+              <div className='w-1/4 px-1'>
+                <button 
+                  className={`button text-xs w-full`}
+                  onClick={() => setShowSettings(true)}>Settings</button>
               </div>
             </div>
             <div>
@@ -159,6 +188,11 @@ const Dashboard: React.FC = () => {
                 <CategoryList />
               }
             </div>
+            {showSettings &&
+              <Modal name='Settings' close={() => setShowSettings(false)}>
+                <Settings close={() => setShowSettings(false)} />
+              </Modal>
+            }
           </div>
         )}
       </Container>

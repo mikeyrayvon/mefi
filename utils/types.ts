@@ -32,6 +32,6 @@ export interface Category {
 
 export interface Settings {
   uid: string
-  primaryCurrency: string
-  secondaryCurrencies: string[] | []
+  primary_currency: string
+  secondary_currencies: string[] | []
 }

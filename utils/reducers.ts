@@ -72,6 +72,13 @@ export const storeReducer = (state: StoreIF, action: ActionIF) => {
         categories: action.payload
       }
     }
+    case 'set settings':
+    {
+      return {
+        ...state,
+        settings: action.payload
+      }
+    }
     case 'insert transaction':
     {
       const updatedTransactions = [
@@ -187,6 +194,13 @@ export const storeReducer = (state: StoreIF, action: ActionIF) => {
       return {
         ...state,
         categories: filteredCategories
+      }
+    }
+    case 'update settings': 
+    {
+      return {
+        ...state,
+        settings: action.payload
       }
     }
     default:
