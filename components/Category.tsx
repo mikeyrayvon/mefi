@@ -11,7 +11,7 @@ interface Props {
 
 const Category: React.FC<Props> = ({ data, close }) => {
   const { user } = Auth.useUser()
-  const { state: { transactions, accounts, categories }, dispatch } = useAppContext()
+  const { state: { categories } } = useAppContext()
   const [loading, setLoading] = useState(false)
   const [ values, setValues ] = useState<{
     name: string,
