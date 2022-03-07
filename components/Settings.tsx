@@ -15,19 +15,19 @@ const Settings: React.FC<Props> = ({ data, close }) => {
   const [loading, setLoading] = useState(false)
   const [secondaryCurrency, setSecondaryCurrency] = useState('')
   const [ values, setValues ] = useState<{
-    primaryCurrency: string,
-    secondaryCurrencies: string[] | [],
+    primary_currency: string,
+    secondary_currencies: string[] | [],
   }>({
-    primaryCurrency: process.env.NEXT_PUBLIC_PRIMARY_CURRENCY ?? '',
-    secondaryCurrencies: []
+    primary_currency: process.env.NEXT_PUBLIC_PRIMARY_CURRENCY ?? '',
+    secondary_currencies: []
   })  
 
   useEffect(() => {
     if (settings) {
       const {primary_currency, secondary_currencies} = settings
       setValues({
-        primaryCurrency: primary_currency,
-        secondaryCurrencies: secondary_currencies
+        primary_currency,
+        secondary_currencies
       })
     }
   }, [settings])
@@ -52,8 +52,8 @@ const Settings: React.FC<Props> = ({ data, close }) => {
       setValues(prevState => {
         return {
           ...prevState,
-          secondaryCurrencies: [
-            ...prevState.secondaryCurrencies,
+          secondary_currencies: [
+            ...prevState.secondary_currencies,
             secondaryCurrency.toUpperCase()
           ]
         }
@@ -67,7 +67,7 @@ const Settings: React.FC<Props> = ({ data, close }) => {
     setValues(prevState => {
       return {
         ...prevState,
-        secondaryCurrencies: prevState.secondaryCurrencies.filter(curr => curr !== code) 
+        secondary_currencies: prevState.secondary_currencies.filter(curr => curr !== code) 
       }
     })
   }
@@ -78,19 +78,19 @@ const Settings: React.FC<Props> = ({ data, close }) => {
 
     try {
       const is_same = 
-        settings.primary_currency === values.primaryCurrency &&
-        (settings.secondary_currencies.length == values.secondaryCurrencies.length) && 
+        settings.primary_currency === values.primary_currency &&
+        (settings.secondary_currencies.length == values.secondary_currencies.length) && 
         settings.secondary_currencies.every(function(element, index) {
-          return element === values.secondaryCurrencies[index]; 
+          return element === values.secondary_currencies[index]; 
         });
 
       if (!is_same && process.env.NEXT_PUBLIC_CURRENCY_API_KEY) {
         let rates = null 
 
-        if (values.secondaryCurrencies.length > 0) {
+        if (values.secondary_currencies.length > 0) {
           const conversionRes = await fetch(`https://api.currencyapi.com/v3/latest?` + new URLSearchParams({
-              base_currency: values.primaryCurrency,
-              currencies: values.secondaryCurrencies.join(',')
+              base_currency: values.primary_currency,
+              currencies: values.secondary_currencies.join(',')
             }), {
             method: 'GET',
             headers: new Headers({
@@ -111,8 +111,8 @@ const Settings: React.FC<Props> = ({ data, close }) => {
           .from('settings')
           .upsert({
             uid: user.id,
-            primary_currency: values.primaryCurrency.toUpperCase(),
-            secondary_currencies: values.secondaryCurrencies,
+            primary_currency: values.primary_currency.toUpperCase(),
+            secondary_currencies: values.secondary_currencies,
             rates
           })
 
@@ -140,8 +140,8 @@ const Settings: React.FC<Props> = ({ data, close }) => {
           </div>
           <input 
             className='w-full input text-xl uppercase' 
-            name='primaryCurrency'
-            value={values.primaryCurrency} 
+            name='primary_currency'
+            value={values.primary_currency} 
             placeholder='EUR, USD, CHF...'
             onChange={handleChange} />
         </div>
@@ -150,8 +150,8 @@ const Settings: React.FC<Props> = ({ data, close }) => {
             <span className='text-xs text-gray-400 block mb-1'>Secondary Currencies</span>
           </div>
           <ul>
-            {values.secondaryCurrencies?.length > 0 &&
-              values.secondaryCurrencies.map(curr => {
+            {values.secondary_currencies?.length > 0 &&
+              values.secondary_currencies.map(curr => {
                 return (
                   <li className='mb-3' key={curr}>
                     <div className='flex -mx-1'>
