@@ -27,8 +27,9 @@ const initialStoreState = {
   monthlyTransactions: [],
   settings: {
     uid: '',
-    primaryCurrency: 'eur',
-    secondaryCurrencies: [],
+    primary_currency: 'eur',
+    secondary_currencies: [],
+    rates: null
   }
 }
 
