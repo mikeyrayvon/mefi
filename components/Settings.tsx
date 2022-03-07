@@ -54,7 +54,7 @@ const Settings: React.FC<Props> = ({ data, close }) => {
           ...prevState,
           secondaryCurrencies: [
             ...prevState.secondaryCurrencies,
-            secondaryCurrency.toLowerCase()
+            secondaryCurrency.toUpperCase()
           ]
         }
       })
@@ -77,18 +77,50 @@ const Settings: React.FC<Props> = ({ data, close }) => {
     setLoading(true)
 
     try {
-      const res = await supabase
-        .from('settings')
-        .upsert({
-          uid: user.id,
-          primary_currency: values.primaryCurrency.toLowerCase(),
-          secondary_currencies: values.secondaryCurrencies,
-        })
+      const is_same = 
+        settings.primary_currency === values.primaryCurrency &&
+        (settings.secondary_currencies.length == values.secondaryCurrencies.length) && 
+        settings.secondary_currencies.every(function(element, index) {
+          return element === values.secondaryCurrencies[index]; 
+        });
 
-      if (res.error) {
-        console.error(res.error)
-        throw new Error()
-      } 
+      if (!is_same && process.env.NEXT_PUBLIC_CURRENCY_API_KEY) {
+        let rates = null 
+
+        if (values.secondaryCurrencies.length > 0) {
+          const conversionRes = await fetch(`https://api.currencyapi.com/v3/latest?` + new URLSearchParams({
+              base_currency: values.primaryCurrency,
+              currencies: values.secondaryCurrencies.join(',')
+            }), {
+            method: 'GET',
+            headers: new Headers({
+              'apikey': process.env.NEXT_PUBLIC_CURRENCY_API_KEY,
+            }),
+            body: JSON.stringify(data),
+          })
+
+          if (conversionRes.status === 200) {
+            const resJson = await conversionRes.json()
+            rates = resJson.data
+          } else {
+            throw new Error()
+          }
+        }
+        
+        const res = await supabase
+          .from('settings')
+          .upsert({
+            uid: user.id,
+            primary_currency: values.primaryCurrency.toUpperCase(),
+            secondary_currencies: values.secondaryCurrencies,
+            rates
+          })
+
+        if (res.error) {
+          console.error(res.error)
+          throw new Error()
+        }
+      }
     } catch (e) {
       console.error(e)
     } finally {
@@ -96,6 +128,8 @@ const Settings: React.FC<Props> = ({ data, close }) => {
       close()
     }
   }
+
+  console.log(settings)
 
   return (
     <div className='pt-4'>
@@ -119,12 +153,19 @@ const Settings: React.FC<Props> = ({ data, close }) => {
             {values.secondaryCurrencies?.length > 0 &&
               values.secondaryCurrencies.map(curr => {
                 return (
-                  <li className='flex mb-3 -mx-1'>
-                    <div className='grow px-1'>
-                      <span className='block w-full input text-xl uppercase'>{curr}</span>
-                    </div>
-                    <div className='px-1'>
-                      <button className='button h-full px-4 bg-gray-200 text-gray-800 text-xl' onClick={(e) => removeSecondaryCurrency(e, curr)}><FiMinus /></button>
+                  <li className='mb-3'>
+                    <div className='flex -mx-1'>
+                      <div className='grow px-1'>
+                        <div className='w-full input text-xl uppercase flex justify-between items-center'>
+                          <span>{curr}</span>
+                          {settings.rates && settings.rates[curr] &&
+                            <span className='text-sm'>1 {settings.primary_currency} = {settings.rates[curr].value} {curr}</span>
+                          }
+                        </div>
+                      </div>
+                      <div className='px-1'>
+                        <button className='button h-full px-4 bg-gray-200 text-gray-800 text-xl' onClick={(e) => removeSecondaryCurrency(e, curr)}><FiMinus /></button>
+                      </div>
                     </div>
                   </li>
                 )

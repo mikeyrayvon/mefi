@@ -34,4 +34,5 @@ export interface Settings {
   uid: string
   primary_currency: string
   secondary_currencies: string[] | []
+  rates: any
 }
