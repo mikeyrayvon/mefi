@@ -11,7 +11,7 @@ interface Props {
 
 const Account: React.FC<Props> = ({ data, close }) => {
   const { user } = Auth.useUser()
-  const { state: { transactions, accounts, categories }, dispatch } = useAppContext()
+  const { state: { transactions, accounts, settings } } = useAppContext()
   const [loading, setLoading] = useState(false)
   const [initialBalance, setInitialBalance] = useState(0)
   const [ values, setValues ] = useState<{
@@ -20,7 +20,7 @@ const Account: React.FC<Props> = ({ data, close }) => {
     balance: number
   }>({
     name: '',
-    currency: 'chf',
+    currency: process.env.NEXT_PUBLIC_PRIMARY_CURRENCY ?? '',
     balance: 0
   })  
 
@@ -166,9 +166,18 @@ const Account: React.FC<Props> = ({ data, close }) => {
                 name='currency'
                 value={values.currency} 
                 onChange={handleChange}>
-                <option value='chf'>CHF</option>
-                <option value='usd'>USD</option>
-                <option value='eur'>EUR</option>
+                {settings && 
+                  settings.primary_currency ? (
+                    <option value={settings.primary_currency}>{settings.primary_currency}</option>
+                  ) : (
+                    <option value={process.env.NEXT_PUBLIC_PRIMARY_CURRENCY ?? ''}>{process.env.NEXT_PUBLIC_PRIMARY_CURRENCY ?? ''}</option>
+                  )
+                }
+                {settings && settings.secondary_currencies && 
+                  settings.secondary_currencies.map(curr => {
+                    return <option value={curr} key={curr}>{curr}</option>
+                  })
+                }
               </select>
             </div>
           </div>
