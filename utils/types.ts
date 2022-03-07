@@ -29,3 +29,9 @@ export interface Category {
   type?: string,
   uid: string
 }
+
+export interface Settings {
+  uid: string
+  primaryCurrency: string
+  secondaryCurrencies: string[] | []
+}
