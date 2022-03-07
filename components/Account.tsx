@@ -87,25 +87,20 @@ const Account: React.FC<Props> = ({ data, close }) => {
         const increase = values.balance > initialBalance
         const amount = increase ? values.balance - initialBalance : initialBalance - values.balance
         const newTxnId = newDatabaseId(transactions)
-        const updateCat = categories.find((c: any) => c.name == 'Update')
-        if (updateCat) {
-          const txnRes = await supabase
-          .from('transactions')
-          .upsert({
-            id: newTxnId,
-            amount,
-            currency: values.currency,
-            cat: updateCat.id,
-            from: increase ? null : id,
-            to: !increase ? null : id,
-            uid: user.id
-          })
-          if (txnRes.error) {
-            console.error(txnRes.error)
-            throw new Error()
-          }
-        } else {
-          throw new Error('no Update Category')
+        const txnRes = await supabase
+        .from('transactions')
+        .upsert({
+          id: newTxnId,
+          amount,
+          currency: values.currency,
+          cat: -1,
+          from: increase ? null : id,
+          to: !increase ? null : id,
+          uid: user.id
+        })
+        if (txnRes.error) {
+          console.error(txnRes.error)
+          throw new Error()
         }
       }
     } catch (e) {

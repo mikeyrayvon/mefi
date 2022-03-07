@@ -117,7 +117,10 @@ const TransactionList: React.FC = ({ }) => {
         {monthlyTransactions.length > 0 ? (
           <ul>
             { 
-              monthlyTransactions.map((item: T, i) => {     
+              monthlyTransactions.map((item: T, i) => { 
+                if (item.cat && item.cat === -1)
+                  return null 
+
                 let dailyTotal = 0     
                 const newDay = item.datetime.substring(0, 10) !== listDate.substring(0, 10) || i === 0
 
