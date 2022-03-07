@@ -74,23 +74,20 @@ const Settings: React.FC<Props> = ({ data, close }) => {
 
   const handleSave = async (event: any) => {
     event.preventDefault()
+
+    // Should improve validation here!
+    if (values.primary_currency.length !== 3)
+      return 
+
     setLoading(true)
 
     try {
-      const is_same = 
-        settings.primary_currency === values.primary_currency &&
-        (settings.secondary_currencies.length == values.secondary_currencies.length) && 
-        settings.secondary_currencies.every(function(element, index) {
-          return element === values.secondary_currencies[index]; 
-        });
+      let rates = settings.rates ?? null 
 
-      if (!is_same && process.env.NEXT_PUBLIC_CURRENCY_API_KEY) {
-        let rates = null 
-
+      if (settings.primary_currency !== values.primary_currency && process.env.NEXT_PUBLIC_CURRENCY_API_KEY) {
         if (values.secondary_currencies.length > 0) {
           const conversionRes = await fetch(`https://api.currencyapi.com/v3/latest?` + new URLSearchParams({
-              base_currency: values.primary_currency,
-              currencies: values.secondary_currencies.join(',')
+              base_currency: values.primary_currency
             }), {
             method: 'GET',
             headers: new Headers({
@@ -106,20 +103,20 @@ const Settings: React.FC<Props> = ({ data, close }) => {
             throw new Error()
           }
         }
+      }
         
-        const res = await supabase
-          .from('settings')
-          .upsert({
-            uid: user.id,
-            primary_currency: values.primary_currency.toUpperCase(),
-            secondary_currencies: values.secondary_currencies,
-            rates
-          })
+      const res = await supabase
+        .from('settings')
+        .upsert({
+          uid: user.id,
+          primary_currency: values.primary_currency.toUpperCase(),
+          secondary_currencies: values.secondary_currencies,
+          rates
+        })
 
-        if (res.error) {
-          console.error(res.error)
-          throw new Error()
-        }
+      if (res.error) {
+        console.error(res.error)
+        throw new Error()
       }
     } catch (e) {
       console.error(e)
@@ -151,9 +148,9 @@ const Settings: React.FC<Props> = ({ data, close }) => {
           </div>
           <ul>
             {values.secondary_currencies?.length > 0 &&
-              values.secondary_currencies.map(curr => {
+              values.secondary_currencies.map((curr, i) => {
                 return (
-                  <li className='mb-3' key={curr}>
+                  <li className='mb-3' key={curr + i}>
                     <div className='flex -mx-1'>
                       <div className='grow px-1'>
                         <div className='w-full input text-xl uppercase flex justify-between items-center'>
@@ -175,7 +172,7 @@ const Settings: React.FC<Props> = ({ data, close }) => {
           <div className='flex -mx-1'>
             <div className='grow px-1'>
               <input 
-                className='w-full input text-xl' 
+                className='w-full input text-xl uppercase' 
                 value={secondaryCurrency}
                 onChange={(event) => setSecondaryCurrency(event.target.value)}
                 placeholder='EUR, USD, CHF...' />
