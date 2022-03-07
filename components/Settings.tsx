@@ -76,9 +76,11 @@ const Settings: React.FC<Props> = ({ data, close }) => {
     event.preventDefault()
 
     // Should improve validation here!
-    if (values.primary_currency.length !== 3)
+    if (values.primary_currency.length !== 3) {
+      alert('Please enter a Primary Currency code')
       return 
-
+    }
+    
     setLoading(true)
 
     try {
