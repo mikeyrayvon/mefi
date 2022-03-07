@@ -11,14 +11,14 @@ interface Props {
 
 const Settings: React.FC<Props> = ({ data, close }) => {
   const { user } = Auth.useUser()
-  const { state: { settings }, dispatch } = useAppContext()
+  const { state: { settings } } = useAppContext()
   const [loading, setLoading] = useState(false)
   const [secondaryCurrency, setSecondaryCurrency] = useState('')
   const [ values, setValues ] = useState<{
     primaryCurrency: string,
     secondaryCurrencies: string[] | [],
   }>({
-    primaryCurrency: '',
+    primaryCurrency: process.env.NEXT_PUBLIC_PRIMARY_CURRENCY ?? '',
     secondaryCurrencies: []
   })  
 
@@ -153,7 +153,7 @@ const Settings: React.FC<Props> = ({ data, close }) => {
             {values.secondaryCurrencies?.length > 0 &&
               values.secondaryCurrencies.map(curr => {
                 return (
-                  <li className='mb-3'>
+                  <li className='mb-3' key={curr}>
                     <div className='flex -mx-1'>
                       <div className='grow px-1'>
                         <div className='w-full input text-xl uppercase flex justify-between items-center'>
